@@ -1,12 +1,19 @@
 import streamlit as st
 import numpy as np
 import tensorflow as tf
-
-# Load the trained model
-model = tf.keras.models.load_model("lstm_runoff_model.h5")
+import traceback
 
 st.title("💧 Runoff Prediction using LSTM")
 st.markdown("Upload 1 year (365 days) of forcing data to predict next day streamflow.")
+
+# Try loading the model with logging
+try:
+    model = tf.keras.models.load_model("lstm_runoff_model.h5")
+    st.success("✅ Model loaded successfully!")
+except Exception as e:
+    st.error("❌ Failed to load model.")
+    st.code(traceback.format_exc())
+    st.stop()
 
 uploaded_file = st.file_uploader("Upload forcing data (.npy or .csv)", type=["npy", "csv"])
 
@@ -25,5 +32,7 @@ if uploaded_file is not None:
             input_sequence = np.expand_dims(data, axis=0)
             prediction = model.predict(input_sequence)
             st.success(f"✅ Predicted Streamflow: {prediction[0][0]:.2f}")
+
     except Exception as e:
-        st.error(f"Error: {e}")
+        st.error("❌ Error during prediction")
+        st.code(traceback.format_exc())
