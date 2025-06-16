@@ -1,6 +1,6 @@
-streamlit==1.35.0
-torch
-numpy==1.26.4
+streamlit
+tensorflow
+numpy
 pandas
-scikit-learn
 matplotlib
+scikit-learn
